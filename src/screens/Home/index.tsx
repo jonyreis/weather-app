@@ -1,12 +1,25 @@
-import * as React from 'react'
-import { View, Text } from 'react-native'
+import React from 'react'
+import { StyleSheet, View, Text } from 'react-native'
 
-const Home = () => {
+import Header from '../../components/header'
+
+const Home = ({ navigation }: any) => {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home</Text>
-    </View>
+    <>
+      <View style={styles.container}>
+        <Header navigation={navigation} title="Home" />
+        <Text>Home aaa</Text>
+      </View>
+    </>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'red',
+    height: '100%',
+    paddingTop: 70,
+  }
+})
 
 export default Home

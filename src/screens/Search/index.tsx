@@ -1,11 +1,16 @@
 import * as React from 'react'
 import { View, Text } from 'react-native'
 
-const Search = () => {
+import Header from '../../components/header'
+
+const Search = ({ navigation }: any) => {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Search</Text>
-    </View>
+    <>
+      <Header navigation={navigation} title="Search" />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Search</Text>
+      </View>
+    </>
   )
 }
 
