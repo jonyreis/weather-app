@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, ActivityIndicator } from 'react-native'
 import * as Location from 'expo-location'
 
 import Header from '../../components/Header'
+import UnitsPicker from '../../components/UnitsPicker'
 import ReloadIcon from '../../components/ReloadIcon'
 
 const BASE_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather?'
