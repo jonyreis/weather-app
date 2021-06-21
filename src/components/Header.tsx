@@ -19,10 +19,12 @@ const Header = ({ navigation, title}: any) => {
 const styles = StyleSheet.create({
   header: {
     position: 'absolute',
+    top: 0,
+    flex: 1,
     width: '100%',
     height: 70,
     alignItems: 'center',
-    backgroundColor: '#ddd',
+    backgroundColor: '#EB6E4B',
     justifyContent: 'flex-end',
     paddingBottom: 8
   },
