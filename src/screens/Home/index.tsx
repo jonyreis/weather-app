@@ -6,6 +6,8 @@ import * as Location from 'expo-location'
 import Header from '../../components/Header'
 import UnitsPicker from '../../components/UnitsPicker'
 import ReloadIcon from '../../components/ReloadIcon'
+import WeatherInfo from '../../components/WeatherInfo'
+import { colors } from '../../utils/index'
 
 const BASE_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather?'
 
@@ -68,6 +70,15 @@ const Home = ({ navigation }: any) => {
       <Header navigation={navigation} title="Home" />
       <View style={styles.container}>
         <StatusBar style="auto" />
+        {currentWeather?.cod === 200 ?
+          <>
+            <View style={styles.main}>
+              <UnitsPicker unitsSystem={unitsSystem} setUnitsSystem={setUnitsSystem} />
+              <ReloadIcon load={load} />
+              <WeatherInfo currentWeather={currentWeather} />
+            </View>
+          </> 
+        : null }
         {errorMessage ?
           <>
             <ReloadIcon load={load} />
