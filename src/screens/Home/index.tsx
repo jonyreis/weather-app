@@ -7,6 +7,8 @@ import Header from '../../components/Header'
 import UnitsPicker from '../../components/UnitsPicker'
 import ReloadIcon from '../../components/ReloadIcon'
 import WeatherInfo from '../../components/WeatherInfo'
+import WeatherDetails from '../../components/WeatherDetails'
+
 import { colors } from '../../utils/index'
 
 const BASE_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather?'
@@ -77,6 +79,7 @@ const Home = ({ navigation }: any) => {
               <ReloadIcon load={load} />
               <WeatherInfo currentWeather={currentWeather} />
             </View>
+            <WeatherDetails currentWeather={currentWeather} unitsSystem={unitsSystem} />
           </> 
         : null }
         {errorMessage ?
@@ -93,7 +96,6 @@ const Home = ({ navigation }: any) => {
   )
 
 }
-
 
 const styles = StyleSheet.create({
   container: {
