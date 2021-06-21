@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, ActivityIndicator } from 'react-native'
 import * as Location from 'expo-location'
 
 import Header from '../../components/Header'
+import ReloadIcon from '../../components/ReloadIcon'
 
 const BASE_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather?'
 
@@ -66,6 +67,12 @@ const Home = ({ navigation }: any) => {
       <Header navigation={navigation} title="Home" />
       <View style={styles.container}>
         <StatusBar style="auto" />
+        {errorMessage ?
+          <>
+            <ReloadIcon load={load} />
+            <Text style={{ textAlign: 'center' }}>{errorMessage}</Text>
+          </>
+        : null }
         {currentWeather?.cod !== 200 ?
           <ActivityIndicator size="large" color={colors.PRIMARY_COLOR} />
         : null }
