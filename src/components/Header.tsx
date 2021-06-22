@@ -2,6 +2,8 @@ import React from 'react'
 import { StyleSheet , View, Text } from 'react-native'
 import { Feather } from '@expo/vector-icons';
 
+import { colors } from '../utils/index'
+
 const Header = ({ navigation, title}: any) => {
   const openMenu = () => {
     navigation.openDrawer()
@@ -24,7 +26,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 70,
     alignItems: 'center',
-    backgroundColor: '#EB6E4B',
+    backgroundColor: colors.PRIMARY_COLOR,
     justifyContent: 'flex-end',
     paddingBottom: 8
   },

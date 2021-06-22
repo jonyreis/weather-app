@@ -48,7 +48,7 @@ const Home = ({ navigation }: any) => {
         return
       }
 
-      const local = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest })
+      const local = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High })
 
       const { latitude, longitude } = local.coords
 
@@ -94,7 +94,6 @@ const Home = ({ navigation }: any) => {
       </View>
     </>
   )
-
 }
 
 const styles = StyleSheet.create({
