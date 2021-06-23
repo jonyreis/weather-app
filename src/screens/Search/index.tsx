@@ -1,105 +1,103 @@
 import * as React from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { View, Text, TextInput, StyleSheet, Pressable, SafeAreaView } from 'react-native'
+import { useDispatch, useSelector, RootStateOrAny } from 'react-redux'
+import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
 import * as Location from 'expo-location'
-import opencage from 'opencage-api-client'
 
 
 import Header from '../../components/Header'
 import CardLocation from '../../components/CardLocation'
 
 import { colors } from '../../utils/index'
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons'
 
 
-const key = '0e2d95efff354a8ab60ce5f710a4d414'
+// const key = '0e2d95efff354a8ab60ce5f710a4d414'
+const key ='e85809527b0341b18712ec1bacc3aab9'
 const BASE_URL = `https://api.opencagedata.com/geocode/v1/json?key=${key}&q`
 
 interface IMyLocationProps {
+  id: string
   city: string
   state: string
   country: string
 }
 
-
-
 const Search = ({ navigation }: any) => {
   const [valueInput, setValueInput] = React.useState('')
   const [myLocation, setMyLocation] = React.useState<IMyLocationProps>({
+    id: '',
     city: '',
     state: '',
-    country: '',
+    country: ''
   })
-  const [listLocation, setListLocation] = React.useState<Array<object>>([])
+  const [listLocation, setListLocation] = React.useState<Array<IMyLocationProps>>([])
 
-  const URL = `${BASE_URL}=${valueInput}`
+  const { search } = useSelector((state: RootStateOrAny) => state)
+  const dispatch = useDispatch()
+  
   let result
 
   React.useEffect(() => {
-    const data = getData()
-    console.log(data)
-  }, [])
-  
+    handleLatestResearch()
+  }, [myLocation])
+
+  React.useEffect(() => {
+    dispatch({
+      type: 'ADD_SEARCH',
+      payload: listLocation
+    })
+  }, [listLocation])
+
   async function handleSubmit() {
+    const URL = `${BASE_URL}=${valueInput}`
+
     const response = await fetch(URL).then((res) => res.json())
     result = response.results[0]
-
+    let timestamp = new Date().getTime()
+    
     setMyLocation({ 
+      id: `${result.components.city}-${timestamp}`,
       city: result.components.city,
       state: result.components.state_code,
       country: result.components.country
     })
-    handleLatestResearch(myLocation)
   }
 
   async function handleMyLocation() {
     let { status } = await Location.getForegroundPermissionsAsync()
-
     if (status !== 'granted') {
       alert('Access to location is needed to run the app')
       return
     }
 
     const local = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Lowest })
-    const coords = `${local.coords.latitude}, ${local.coords.longitude}`
+    const coords = `${local.coords.latitude},${local.coords.longitude}`
 
-    opencage.geocode({ key, q: coords }).then(response => {
-      result = response.results[0]
+    const response = await fetch(`${BASE_URL}=${coords}`).then((res) => res.json())
 
-      setMyLocation({ 
-        city: result.components.city,
-        state: result.components.state_code,
-        country: result.components.country
-      })
-      handleLatestResearch(myLocation)
+    result = response.results[0]
+    let timestamp = new Date().getTime()
+
+    setMyLocation({
+      id: `${result.components.city}-${timestamp}`,
+      city: result.components.city,
+      state: result.components.state_code,
+      country: result.components.country
     })
   }
 
-  async function handleLatestResearch(myLocation: object) {
-    if (listLocation.length < 3) {
-      listLocation.unshift(myLocation)
-      storeData(listLocation)
-    }
-    listLocation.pop()
-    listLocation.unshift(myLocation)
-    storeData(listLocation)
-  }
+  function handleLatestResearch() {
+    listLocation.forEach((item, index) => {
+      if (item.city === myLocation.city) {
+        listLocation.splice(index, 1)
+      }
+    })
+    if (listLocation.length <= 3) {
+      setListLocation([ myLocation, ...listLocation])
 
-  async function storeData(value: Array<object>) {
-    try {
-      const jsonValue = JSON.stringify(value)
-      await AsyncStorage.setItem('@storage_Key', jsonValue)
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  async function getData() {
-    try {
-      const jsonValue = await AsyncStorage.getItem('@storage_Key')
-      return jsonValue != null ? JSON.parse(jsonValue) : []
-    } catch(e) {
-      console.log(e)
+    } else {
+      listLocation.splice(2, 1)
+      setListLocation([ myLocation, ...listLocation])
     }
   }
 
@@ -112,7 +110,7 @@ const Search = ({ navigation }: any) => {
           style={styles.input}
           value={valueInput}
           onChangeText={text => setValueInput(text)}
-          onSubmitEditing={() => handleSubmit()}
+          onSubmitEditing={handleSubmit}
         />
         <View style={styles.btnContainer}>
           <Pressable style={styles.button} onPress={handleSubmit}>
@@ -124,9 +122,18 @@ const Search = ({ navigation }: any) => {
             </Text>
           </Pressable>
         </View>
-        <SafeAreaView>
+        <View>
           <Text style={styles.previousText}>Previous Searches</Text>
-        </SafeAreaView>
+          {search.map((item: { id: string; city: string; state: string; country: string }) => 
+            item.id != '' &&
+            <CardLocation 
+              id={item.id}
+              city={item.city} 
+              state={item.state} 
+              country={item.country} 
+            />
+          )}
+        </View>
       </View>
     </>
   )
